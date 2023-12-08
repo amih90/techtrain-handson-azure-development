@@ -1,0 +1,15 @@
+.create-merge table Requests (
+    EventTime: datetime,
+    ServiceName:string,
+    RequestId:string,
+    RequestIp:string,
+    OperationName:string)
+.alter-merge table Requests policy retention softdelete = 7d recoverability = disabled
+
+.create-or-alter table Requests ingestion json mapping "RequestsJsonMapping" '['
+    '{ "column": "EventTime", "datatype": "datetime", "path": "$.EventTime" },'
+    '{ "column": "ServiceName", "datatype": "string", "path": "$.ServiceName" },'
+    '{ "column": "RequestId", "datatype": "string", "path": "$.RequestId" },'
+    '{ "column": "RequestIp", "datatype": "string", "path": "$.RequestIp" },'
+    '{ "column": "OperationName", "datatype": "string", "path": "$.OperationName" }'
+']'

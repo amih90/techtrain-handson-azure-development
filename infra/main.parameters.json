@@ -16,6 +16,9 @@
     },
     "enableDataStreaming": {
       "value": "${ENABLE_DATA_STREAMING=true}"
+    },
+    "useADX": {
+      "value": "${USE_ADX=false}"
     }
   }
 }

@@ -26,12 +26,16 @@ param webServiceName string = ''
 param apimServiceName string = ''
 param managedIdentityName string = ''
 param eventHubNamespaceName string = ''
+param adxClusterName string = ''
 
 @description('Flag to use Azure API Management to mediate the calls between the Web frontend and the backend API')
 param useAPIM bool = false
 
 @description('Flag to enable data streaming')
 param enableDataStreaming bool = false
+
+@description('Flag to use Azure Data Explorer')
+param useADX bool = false
 
 @description('Id of the user or app to assign application roles')
 param principalId string = ''
@@ -213,6 +217,34 @@ module eventHubRequests './core/messaging/eventhub.bicep' = if (enableDataStream
         principalType: 'ServicePrincipal'
         roleDefinitionId: 'a638d3c7-ab3a-418d-83e6-5f17a39d4fde' // Azure Event Hubs Data Receiver
         principalId: userManagedIdentity.outputs.properties.principalId
+      }
+    ]
+  }
+}
+
+// Configure Azure Data Explorer
+module adx './core/database/adx/adx.bicep' = if (useADX) {
+  name: 'adx-deployment'
+  scope: rg
+  params: {
+    clusterName: !empty(adxClusterName) ? adxClusterName : '${abbrs.kustoClusters}${resourceToken}'
+    location: location
+    identity: {
+      type: 'UserAssigned'
+      userAssignedIdentities: {
+        '${userManagedIdentity.outputs.resourceId}': {}
+      }
+    }
+    databases: [
+      {
+        name: 'RawEvents'
+        properties: {
+          hotCachePeriod: 'P1D'
+          softDeletePeriod: 'P30D'
+        }
+        scriptsContent: [
+          loadTextContent('app/resources/requests.csl')
+        ]
       }
     ]
   }
