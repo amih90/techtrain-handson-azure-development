@@ -250,6 +250,31 @@ module adx './core/database/adx/adx.bicep' = if (useADX) {
   }
 }
 
+module eventHubAdxDataConnection './core/database/adx/adx-data-connection.bicep' = if (enableDataStreaming && useADX) {
+  name: 'dc-eventhub-adx-requests-deployment'
+  scope: rg
+  dependsOn: [
+    adx
+  ]
+  params: {
+    clusterName: adx.outputs.clusterName
+    clusterLocation: location
+    databaseName: 'RawEvents'
+    name: 'dc-eventhub-adx-requests'
+    properties: {
+      compression: 'None'
+      consumerGroup: '$Default'
+      databaseRouting: 'Single'
+      dataFormat: 'MULTIJSON'
+      eventSystemProperties: []
+      eventHubResourceId: eventHubRequests.outputs.eventHubResourceId
+      managedIdentityResourceId: userManagedIdentity.outputs.resourceId
+      mappingRuleName: 'RequestsJsonMapping'
+      tableName: 'Requests'
+    }
+  }
+}
+
 // Configures the API in the Azure API Management (APIM) service
 module apimApi './app/apim-api.bicep' = if (useAPIM) {
   name: 'apim-api-deployment'
