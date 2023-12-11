@@ -13,3 +13,7 @@ services:
     project: ./src/api
     language: csharp
     host: appservice
+  backend:
+    project: ./src/backend
+    language: csharp
+    host: function
