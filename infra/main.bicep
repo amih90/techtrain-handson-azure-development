@@ -14,6 +14,7 @@ param location string
 //      "value": "myGroupName"
 // }
 param apiServiceName string = ''
+param backendServiceName string = ''
 param applicationInsightsDashboardName string = ''
 param applicationInsightsName string = ''
 param appServicePlanName string = ''
@@ -93,6 +94,24 @@ module api './app/api.bicep' = {
       AZURE_COSMOS_DATABASE_NAME: cosmos.outputs.databaseName
       AZURE_COSMOS_ENDPOINT: cosmos.outputs.endpoint
       API_ALLOW_ORIGINS: web.outputs.SERVICE_WEB_URI
+    }
+  }
+}
+
+
+// The backend application based on functions
+module backend './app/backend.bicep' = {
+  name: 'backend'
+  scope: rg
+  params: {
+    name: !empty(backendServiceName) ? backendServiceName : '${abbrs.webSitesFunctions}be-${resourceToken}'
+    location: location
+    tags: tags
+    applicationInsightsName: monitoring.outputs.applicationInsightsName
+    appServicePlanId: appServicePlan.outputs.id
+    keyVaultName: keyVault.outputs.name
+    allowedOrigins: [ web.outputs.SERVICE_WEB_URI ]
+    appSettings: {
     }
   }
 }
@@ -306,6 +325,7 @@ output AZURE_TENANT_ID string = tenant().tenantId
 output REACT_APP_API_BASE_URL string = useAPIM ? apimApi.outputs.SERVICE_API_URI : api.outputs.SERVICE_API_URI
 output REACT_APP_APPLICATIONINSIGHTS_CONNECTION_STRING string = monitoring.outputs.applicationInsightsConnectionString
 output REACT_APP_WEB_BASE_URL string = web.outputs.SERVICE_WEB_URI
+output BACKEND_API_ENDPOINT string = backend.outputs.SERVICE_BACKEND_URI
 output USE_APIM bool = useAPIM
 output ENABLE_DATA_STREAMING bool = enableDataStreaming
 output EVENTHUB_CONNECTION_CONNECTION_STRING string =  eventHubRequests.outputs.eventHubConnectionString
