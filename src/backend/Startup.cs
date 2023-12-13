@@ -35,6 +35,7 @@ namespace backend
                     return new VirusTotalClient(virusTotalApiKey, httpClient, memoryCache);
                 })
                 .AddSingleton<Healthz>();
+                .AddHealthChecks();
         }
     }
 }
