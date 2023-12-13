@@ -41,6 +41,7 @@ module backend '../core/host/functions.bicep' = {
     runtimeVersion: '6.0'
     storageAccountName: storage.outputs.name
     scmDoBuildDuringDeployment: false
+    healthCheckPath: '/api/healthz'
   }
 }
 
