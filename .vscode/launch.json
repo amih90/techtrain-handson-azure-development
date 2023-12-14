@@ -9,7 +9,7 @@
             "url": "http://localhost:3000",
             "sourceMapPathOverrides": {
                 "webpack:///src/*": "${webRoot}/*"
-            }, 
+            },
         },
 
         {
@@ -35,6 +35,12 @@
             "name": ".NET Core Attach",
             "type": "coreclr",
             "request": "attach"
+        },
+        {
+            "name": "Attach to .NET Functions",
+            "type": "coreclr",
+            "request": "attach",
+            "processId": "${command:azureFunctions.pickProcess}"
         }
     ],
 
