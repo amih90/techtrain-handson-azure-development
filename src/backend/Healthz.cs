@@ -10,14 +10,20 @@ using Newtonsoft.Json;
 
 namespace backend
 {
-    public static class Healthz
+    public class Healthz
     {
-        [FunctionName("Healthz")]
-        public static async Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", Route = null)] HttpRequest req,
-            ILogger log)
+        private readonly ILogger<Healthz> _log;
+
+        public Healthz(ILogger<Healthz> log)
         {
-            log.LogInformation("C# HTTP trigger function processed a request.");
+            _log = log;
+        }
+
+        [FunctionName("Healthz")]
+        public async Task<IActionResult> Run(
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", Route = null)] HttpRequest req)
+        {
+            _log.LogInformation("C# HTTP trigger function processed a request.");
 
             string name = req.Query["name"];
 
