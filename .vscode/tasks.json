@@ -80,7 +80,6 @@
             },
             "problemMatcher": []
         },
-
         {
             "label": "Start API and Web",
             "dependsOn":[
@@ -88,6 +87,60 @@
                 "Start Web"
             ],
             "problemMatcher": []
+        },
+        {
+            "label": "Start Backend",
+            "type": "dotenv",
+            "targetTasks": "Backend Functions Run",
+            "file": "${input:dotEnvFilePath}"
+        },
+        {
+            "label": "Clean Backend",
+            "command": "dotnet",
+            "args": [
+                "clean",
+                "${workspaceFolder}/src/backend/Todo.Backend.csproj",
+                "/property:GenerateFullPaths=true",
+                "/consoleloggerparameters:NoSummary"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}/src/backend/"
+            },
+            "type": "process",
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "Build Backend",
+            "command": "dotnet",
+            "args": [
+                "build",
+                "${workspaceFolder}/src/backend/Todo.Backend.csproj",
+                "/property:GenerateFullPaths=true",
+                "/consoleloggerparameters:NoSummary"
+            ],
+            "type": "process",
+            "dependsOn": "Clean Backend",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "Backend Functions Run",
+            "detail": "Helper task--use 'Start Backend' task to ensure environment is set up correctly",
+            "type": "func",
+            "dependsOn": "Build Backend",
+            "command": "host start",
+            "options": {
+                "cwd": "${workspaceFolder}/src/backend/"
+            },
+            "presentation": {
+                "panel": "dedicated",
+            },
+            "problemMatcher": [
+                "$func-dotnet-watch"
+            ]
         }
     ],
 
