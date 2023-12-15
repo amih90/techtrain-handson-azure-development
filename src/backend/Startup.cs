@@ -9,8 +9,10 @@ namespace backend
     {
         public override void Configure(IFunctionsHostBuilder builder)
         {
-
-            builder.Services.AddSingleton<Healthz>();
+            builder.Services
+                .AddHttpClient()
+                .AddMemoryCache()
+                .AddSingleton<Healthz>();
         }
     }
 }
