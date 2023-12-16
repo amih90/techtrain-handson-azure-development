@@ -45,6 +45,8 @@ var abbrs = loadJsonContent('./abbreviations.json')
 var resourceToken = toLower(uniqueString(subscription().id, environmentName, location))
 var tags = { 'azd-env-name': environmentName }
 
+var eventHubRequestsConsumerGroup = 'cg-func-eh-trigger-requests'
+
 // Organize resources in a resource group
 resource rg 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   name: !empty(resourceGroupName) ? resourceGroupName : '${abbrs.resourcesResourceGroups}${environmentName}'
@@ -112,7 +114,42 @@ module backend './app/backend.bicep' = {
     keyVaultName: keyVault.outputs.name
     allowedOrigins: [ web.outputs.SERVICE_WEB_URI ]
     appSettings: {
+      EventHubRequestsName: eventHubRequests.outputs.eventHubName
+      EventHubRequestsConnectionOptions__fullyQualifiedNamespace: '${eventHubRequests.outputs.eventHubNamespaceName}.servicebus.windows.net' // Note: this dns suffix isn't supported sovereign clouds
+      EventHubRequestsConsumerGroup: eventHubRequestsConsumerGroup
     }
+  }
+}
+
+// Give the backend application access to consume events from the Event Hub
+module backendEventHubRoleAssignment './core/security/role.bicep' = {
+  name: 'msi-backend-eventhub-data-receiver'
+  scope: rg
+  params: {
+    principalType: 'ServicePrincipal'
+    roleDefinitionId: 'a638d3c7-ab3a-418d-83e6-5f17a39d4fde' // Azure Event Hubs Data Receiver
+    principalId: backend.outputs.SERVICE_BACKEND_IDENTITY_PRINCIPAL_ID
+  }
+}
+
+// Give the backend application access to KeyVault
+module backendKeyVaultAccess './core/security/keyvault-access.bicep' = {
+  name: 'backend-keyvault-access'
+  scope: rg
+  params: {
+    keyVaultName: keyVault.outputs.name
+    principalId: backend.outputs.SERVICE_BACKEND_IDENTITY_PRINCIPAL_ID
+  }
+}
+
+// Give the backend application the role to access Cosmos
+module backendCosmosSqlRoleAssign './core/database/cosmos/sql/cosmos-sql-role-assign.bicep' = {
+  name: 'backend-cosmos-access'
+  scope: rg
+  params: {
+    accountName: cosmos.outputs.accountName
+    roleDefinitionId: cosmos.outputs.roleDefinitionId
+    principalId: backend.outputs.SERVICE_BACKEND_IDENTITY_PRINCIPAL_ID
   }
 }
 
@@ -236,6 +273,12 @@ module eventHubRequests './core/messaging/eventhub.bicep' = if (enableDataStream
         principalType: 'ServicePrincipal'
         roleDefinitionId: 'a638d3c7-ab3a-418d-83e6-5f17a39d4fde' // Azure Event Hubs Data Receiver
         principalId: userManagedIdentity.outputs.properties.principalId
+      }
+    ]
+    eventHubConsumerGroupNames: [
+      {
+        name: eventHubRequestsConsumerGroup
+        userMetadata: 'Functionapp backend'
       }
     ]
   }

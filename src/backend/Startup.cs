@@ -1,3 +1,4 @@
+using Azure.Identity;
 using Microsoft.Azure.Functions.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -12,6 +13,7 @@ namespace backend
             builder.Services
                 .AddHttpClient()
                 .AddMemoryCache()
+                .AddSingleton<DefaultAzureCredential>(_ => new DefaultAzureCredential(includeInteractiveCredentials: true))
                 .AddSingleton<Healthz>();
         }
     }
