@@ -114,6 +114,8 @@ module backend './app/backend.bicep' = {
     keyVaultName: keyVault.outputs.name
     allowedOrigins: [ web.outputs.SERVICE_WEB_URI ]
     appSettings: {
+      CosmosDatabaseName: cosmos.outputs.databaseName
+      CosmosConnectionOptions__accountEndpoint: cosmos.outputs.endpoint
       EventHubRequestsName: eventHubRequests.outputs.eventHubName
       EventHubRequestsConnectionOptions__fullyQualifiedNamespace: '${eventHubRequests.outputs.eventHubNamespaceName}.servicebus.windows.net' // Note: this dns suffix isn't supported sovereign clouds
       EventHubRequestsConsumerGroup: eventHubRequestsConsumerGroup
