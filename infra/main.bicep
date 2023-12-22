@@ -117,6 +117,7 @@ module backend './app/backend.bicep' = {
       EventHubRequestsName: eventHubRequests.outputs.eventHubName
       EventHubRequestsConnectionOptions__fullyQualifiedNamespace: '${eventHubRequests.outputs.eventHubNamespaceName}.servicebus.windows.net' // Note: this dns suffix isn't supported sovereign clouds
       EventHubRequestsConsumerGroup: eventHubRequestsConsumerGroup
+      KeyVaultEndpoint: keyVault.outputs.endpoint
     }
   }
 }

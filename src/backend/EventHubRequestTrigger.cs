@@ -6,13 +6,22 @@ using System.Threading.Tasks;
 using Azure.Messaging.EventHubs;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json.Linq;
+using backend.Models;
 
 namespace backend
 {
-    public static class EventHubRequestTrigger
+    public class EventHubRequestTrigger
     {
+        private readonly VirusTotalClient _virusTotalClient;
+
+        public EventHubRequestTrigger(VirusTotalClient virusTotalClient)
+        {
+            _virusTotalClient = virusTotalClient;
+        }
+
         [FunctionName("EventHubRequestTrigger")]
-        public static async Task Run([
+        public async Task Run([
             EventHubTrigger("%EventHubRequestsName%",
                 Connection = "EventHubRequestsConnectionOptions",
                 ConsumerGroup = "%EventHubRequestsConsumerGroup%")] EventData[] events,
@@ -32,9 +41,10 @@ namespace backend
                     }
 
                     string ip = requestIp.ToString();
-                    log.LogInformation($"RequestIp=[{ip}]");
+                    JObject ipReport = await _virusTotalClient.GetIPReportAsync(ip);
+                    bool isMalicious =  IsMaliciousIp(ipReport);
 
-                    // Implement your logic here
+                    log.LogInformation($"IP=[{ip}], isMalicious=[{isMalicious}]");
                 }
                 catch (Exception e)
                 {
@@ -51,6 +61,14 @@ namespace backend
 
             if (exceptions.Count == 1)
                 throw exceptions.Single();
+        }
+
+        private static bool IsMaliciousIp(JObject ipReport)
+        {
+            return ipReport["data"]["attributes"]["last_analysis_stats"]
+                .ToObject<Dictionary<string, int>>()
+                .Where(kvp => kvp.Key != "undetected")
+                .Sum(kvp => kvp.Value) > 0;
         }
     }
 }
