@@ -208,6 +208,13 @@ module eventHubRequests './core/messaging/eventhub.bicep' = if (enableDataStream
     workspaceId: monitoring.outputs.logAnalyticsWorkspaceId
     eventHubNamespaceName: !empty(eventHubNamespaceName) ? eventHubNamespaceName : '${abbrs.eventHubNamespaces}${resourceToken}'
     eventHubName: '${abbrs.eventHubNamespacesEventHubs}${resourceToken}'
+    roleAssignments: [
+      {
+        principalType: 'ServicePrincipal'
+        roleDefinitionId: 'a638d3c7-ab3a-418d-83e6-5f17a39d4fde' // Azure Event Hubs Data Receiver
+        principalId: userManagedIdentity.outputs.properties.principalId
+      }
+    ]
   }
 }
 
