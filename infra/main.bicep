@@ -231,6 +231,7 @@ module apimApi './app/apim-api.bicep' = if (useAPIM) {
     webFrontendUrl: web.outputs.SERVICE_WEB_URI
     apiBackendUrl: api.outputs.SERVICE_API_URI
     apiAppName: api.outputs.SERVICE_API_NAME
+    eventhubConnectionString: eventHubRequests.outputs.eventHubConnectionString
   }
 }
 

@@ -25,6 +25,18 @@
         <validate-content unspecified-content-type-action="ignore" max-size="1024" size-exceeded-action="detect" errors-variable-name="requestBodyValidation">
             <content type="application/json" validate-as="json" action="detect" />
         </validate-content>
+        <!-- Adding logger to event hub -->
+        <log-to-eventhub logger-id="{loggerId}">
+            @{
+                return new JObject(
+                    new JProperty("EventTime", DateTime.UtcNow.ToString()),
+                    new JProperty("ServiceName", context.Deployment.ServiceName),
+                    new JProperty("RequestId", context.RequestId),
+                    new JProperty("RequestIp", context.Request.IpAddress),
+                    new JProperty("OperationName", context.Operation.Name)
+                ).ToString();
+            }
+        </log-to-eventhub>
         <!-- Optional policy to send custom trace telemetry to Application Insights. Learn more at https://learn.microsoft.com/en-us/azure/api-management/api-management-advanced-policies#Trace -->
         <trace source="@(context.Api.Name)" severity="verbose">
             <message>Call to the @(context.Api.Name)</message>

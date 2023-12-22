@@ -13,6 +13,9 @@
     },
     "useAPIM": {
       "value": "${USE_APIM=true}"
+    },
+    "enableDataStreaming": {
+      "value": "${ENABLE_DATA_STREAMING=true}"
     }
   }
 }
