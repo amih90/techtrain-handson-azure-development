@@ -24,6 +24,7 @@ param logAnalyticsName string = ''
 param resourceGroupName string = ''
 param webServiceName string = ''
 param apimServiceName string = ''
+param managedIdentityName string = ''
 
 @description('Flag to use Azure API Management to mediate the calls between the Web frontend and the backend API')
 param useAPIM bool = false
@@ -181,6 +182,16 @@ module apim './core/gateway/apim.bicep' = if (useAPIM) {
     location: location
     tags: tags
     applicationInsightsName: monitoring.outputs.applicationInsightsName
+  }
+}
+
+// Configure a user managed identity
+module userManagedIdentity './core/security/user-managed-identity.bicep' = {
+  name: 'msi-deployment'
+  scope: rg
+  params: {
+    location: location
+    name: !empty(managedIdentityName) ? managedIdentityName : '${abbrs.managedIdentityUserAssignedIdentities}${resourceToken}'
   }
 }
 
