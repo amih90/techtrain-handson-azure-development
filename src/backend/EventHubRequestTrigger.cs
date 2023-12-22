@@ -25,6 +25,11 @@ namespace backend
             EventHubTrigger("%EventHubRequestsName%",
                 Connection = "EventHubRequestsConnectionOptions",
                 ConsumerGroup = "%EventHubRequestsConsumerGroup%")] EventData[] events,
+            [CosmosDB(
+                databaseName: "%CosmosDatabaseName%",
+                containerName: "VirusTotal",
+                Connection = "CosmosConnectionOptions")]
+                IAsyncCollector<VirusTotal> virusTotalEvents,
             ILogger log)
         {
             var exceptions = new List<Exception>();
@@ -45,6 +50,11 @@ namespace backend
                     bool isMalicious =  IsMaliciousIp(ipReport);
 
                     log.LogInformation($"IP=[{ip}], isMalicious=[{isMalicious}]");
+
+                    if (isMalicious)
+                    {
+                        await virusTotalEvents.AddAsync(new VirusTotal(ip, ipReport));
+                    }
                 }
                 catch (Exception e)
                 {

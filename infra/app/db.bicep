@@ -13,6 +13,11 @@ param containers array = [
     id: 'TodoItem'
     partitionKey: '/id'
   }
+  {
+    name: 'VirusTotal'
+    id: 'VirusTotal'
+    partitionKey: '/id'
+  }
 ]
 
 param databaseName string = ''
