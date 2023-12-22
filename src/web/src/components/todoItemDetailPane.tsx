@@ -1,4 +1,6 @@
-import { Text, DatePicker, Stack, TextField, PrimaryButton, DefaultButton, Dropdown, IDropdownOption, FontIcon } from '@fluentui/react';
+import { Text, Stack, TextField, PrimaryButton, DefaultButton, Dropdown, IDropdownOption, FontIcon } from '@fluentui/react';
+import 'react-datetime-picker/dist/DateTimePicker.css';
+import { DateTimePicker } from 'react-datetime-picker';
 import React, { useEffect, useState, FC, ReactElement, MouseEvent, FormEvent } from 'react';
 import { TodoItem, TodoItemState } from '../models';
 import { stackGaps, stackItemMargin, stackItemPadding, titleStackStyles } from '../ux/styles';
@@ -73,7 +75,9 @@ export const TodoItemDetailPane: FC<TodoItemDetailPaneProps> = (props: TodoItemD
                         <TextField label="Name" placeholder="Item name" required value={name} onChange={(e, value) => setName(value || '')} />
                         <TextField label="Description" placeholder="Item description" multiline size={20} value={description || ''} onChange={(e, value) => setDescription(value)} />
                         <Dropdown label="State" options={todoStateOptions} required selectedKey={state} onChange={onStateChange} />
-                        <DatePicker label="Due Date" placeholder="Due date" value={dueDate} onSelectDate={onDueDateChange} />
+                        <hr />
+                        <Text block variant="medium" tokens={stackItemPadding}><b>Due Date</b></Text>
+                        <DateTimePicker value={dueDate} onChange={onDueDateChange} />
                     </Stack.Item>
                     <Stack.Item tokens={stackItemMargin}>
                         <Stack horizontal tokens={stackGaps}>

@@ -101,6 +101,12 @@ const TodoItemListPane: FC<TodoItemListPaneProps> = (props: TodoItemListPaneProp
 
     const groups: IGroup[] = [
         {
+            key: TodoItemState.Overdue,
+            name: 'Overdue',
+            count: items.filter(i => i.state === TodoItemState.Overdue).length,
+            startIndex: items.findIndex(i => i.state === TodoItemState.Overdue),
+        },
+        {
             key: TodoItemState.Todo,
             name: 'Todo',
             count: items.filter(i => i.state === TodoItemState.Todo).length,
@@ -243,7 +249,7 @@ const TodoItemListPane: FC<TodoItemListPaneProps> = (props: TodoItemListPaneProp
             {!props.items &&
                 <Stack.Item align="center" tokens={stackItemPadding}>
                     <Label>Loading List Items...</Label>
-                    <Spinner size={SpinnerSize.large} labelPosition="top" /> 
+                    <Spinner size={SpinnerSize.large} labelPosition="top" />
                 </Stack.Item>
             }
             {props.items && items.length === 0 &&
