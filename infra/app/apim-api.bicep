@@ -26,7 +26,12 @@ param apiBackendUrl string
 @description('Resource name for backend Web App or Function App')
 param apiAppName string = ''
 
-var apiPolicyContent = replace(loadTextContent('./apim-api-policy.xml'), '{origin}', webFrontendUrl)
+@description('Event Hub Logger connection string')
+param eventhubConnectionString string = ''
+
+var eventHubLoggerName = 'eh-logger'
+var apiPolicyContent = replace(replace(loadTextContent('./apim-api-policy.xml'), '{origin}', webFrontendUrl), '{loggerId}', eventHubLoggerName)
+
 
 resource restApi 'Microsoft.ApiManagement/service/apis@2021-12-01-preview' = {
   name: apiName
@@ -115,6 +120,20 @@ resource apiAppProperties 'Microsoft.Web/sites/config@2022-03-01' = if (!empty(a
 resource apimLogger 'Microsoft.ApiManagement/service/loggers@2021-12-01-preview' existing = {
   name: 'app-insights-logger'
   parent: apimService
+}
+
+// Add event hub logger
+resource ehLoggerWithConnectionString 'Microsoft.ApiManagement/service/loggers@2022-04-01-preview' = if (!empty(eventhubConnectionString)) {
+  name: eventHubLoggerName
+  parent: apimService
+  properties: {
+    loggerType: 'azureEventHub'
+    description: 'Event hub logger with connection string'
+    credentials: {
+      connectionString: eventhubConnectionString
+      name: 'ApimEventHub'
+    }
+  }
 }
 
 output SERVICE_API_URI string = '${apimService.properties.gatewayUrl}/${apiPath}'
