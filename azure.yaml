@@ -1,8 +1,8 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/Azure/azure-dev/main/schemas/v1.0/azure.yaml.json
 
-name: todo-csharp-cosmos-sql
+name: techtrain-handson-azure-development
 metadata:
-  template: todo-csharp-cosmos-sql@0.0.1-beta
+  template: techtrain-handson-azure-development@0.0.1-beta
 services:
   web:
     project: ./src/web
