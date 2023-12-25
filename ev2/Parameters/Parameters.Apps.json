@@ -1,0 +1,26 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "paths": [
+    {
+      "parameterReference": "apiPackageUri"
+    },
+    {
+      "parameterReference": "webPackageUri"
+    }
+  ],
+  "parameters": {
+    "environmentName": {
+      "value": "__ENVIRONMENT_AZD_AZURE_ENV_NAME__"
+    },
+    "location": {
+      "value": "__REGION_LOCATION__"
+    },
+    "apiPackageUri": {
+      "value": "__API_PACKAGE_URI__"
+    },
+    "webPackageUri": {
+      "value": "__WEB_PACKAGE_URI__"
+    }
+  }
+}

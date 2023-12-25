@@ -11,6 +11,19 @@
       ]
     },
     {
+      "scopeTagName": "BinariesScope",
+      "bindings": [
+        {
+          "find": "__API_PACKAGE_URI__",
+          "replaceWith": "bin/Todo.Api.zip"
+        },
+        {
+          "find": "__WEB_PACKAGE_URI__",
+          "replaceWith": "bin/Todo.Web.zip"
+        }
+      ]
+    },
+    {
       "scopeTagName": "PrefixScope",
       "bindings": [
         {

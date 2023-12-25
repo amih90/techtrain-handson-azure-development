@@ -17,6 +17,15 @@
                             "parametersPath": "Parameters/Parameters.Infra.json"
                         }
                     }
+                },
+                {
+                    "name": "apps",
+                    "composedOf": {
+                        "arm": {
+                            "templatePath": "apps.json",
+                            "parametersPath": "Parameters/Parameters.Apps.json"
+                        }
+                    }
                 }
             ]
         }
@@ -39,12 +48,19 @@
                 },
                 {
                     "name": "RegionScope"
+                },
+                {
+                    "name": "BinariesScope"
                 }
             ],
             "serviceResources": [
                 {
                     "name": "todo.infra.dev",
                     "instanceOf": "infra"
+                },
+                {
+                    "name": "todo.apps.dev",
+                    "instanceOf": "apps"
                 }
             ]
         },
@@ -65,12 +81,19 @@
                 },
                 {
                     "name": "RegionScope"
+                },
+                {
+                    "name": "BinariesScope"
                 }
             ],
             "serviceResources": [
                 {
                     "name": "todo.infra.prod",
                     "instanceOf": "infra"
+                },
+                {
+                    "name": "todo.apps.prod",
+                    "instanceOf": "apps"
                 }
             ]
         }

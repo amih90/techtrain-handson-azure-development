@@ -21,16 +21,21 @@
             <OutputFile>$(OutputPath)\%(RecursiveDir)\%(FileName).json</OutputFile>
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </Bicep>
+        <Binaries Include="..\src\api\bin\*.zip" />
+        <Binaries Include="..\src\web\bin\*.zip" />
     </ItemGroup>
 
     <Target Name="PackageDependencies" AfterTargets="Build">
         <Message Text="Executing Package Dependencies Task" Importance="High" />
+        <Exec Command="npm run zip --prefix ../src/web" Condition="$([MSBuild]::IsOSPlatform('Linux'))" />
+        <Exec Command="dotnet publish ../src/api/Todo.Api.csproj" />
     </Target>
 
     <Target Name="CopyFiles" AfterTargets="PackageDependencies">
         <Message Text="Executing CopyFiles Task" Importance="High" />
         <Copy SourceFiles="@(ServiceGroupRoot)" DestinationFolder="$(OutputPath)/%(RecursiveDir)" />
         <Copy SourceFiles="@(VersionFiles)" DestinationFolder="@(VersionFiles->'$(OutputPath)/%(RecursiveDir)')" />
+        <Copy SourceFiles="@(Binaries)" DestinationFolder="$(OutputPath)/bin/%(RecursiveDir)" />
     </Target>
 
     <Target Name="CleanOutputPath" AfterTargets="Clean">

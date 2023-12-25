@@ -13,6 +13,7 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
+    "zip": "rm -rf bin && mkdir -p bin && (cd build && zip -r ../bin/Todo.Web.zip .)",
     "envconfig": "node entrypoint.js -e .env -o ./public/env-config.js",
     "prestart": "npm run envconfig",
     "start": "react-scripts start",

@@ -12,4 +12,9 @@
     <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.21.0" />
     <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="6.4.0" />
   </ItemGroup>
+
+  <Target Name="PreparePackage" AfterTargets="AfterPublish">
+    <Message Text="Packging Zip File" Importance="High" />
+    <ZipDirectory SourceDirectory="$(MSBuildProjectDirectory)/$(OutputPath)/publish" DestinationFile="$(MSBuildProjectDirectory)/bin/$(ProjectName).zip" Overwrite="true" />
+  </Target>
 </Project>
