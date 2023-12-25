@@ -1,0 +1,52 @@
+{
+    "$schema": "https://ev2schema.azure.net/schemas/2020-01-01/serviceModel.json",
+    "serviceMetadata": {
+        "serviceGroup": "TechTrain.Todo",
+        "serviceIdentifier": "<service-identifier>",
+        "environment": "Dev"
+    },
+    "serviceResourceGroupDefinitions": [
+        {
+            "name": "todo",
+            "serviceResourceDefinitions": [
+                {
+                    "name": "infra",
+                    "composedOf": {
+                        "arm": {
+                            "templatePath": "main.json",
+                            "parametersPath": "Parameters/Parameters.Infra.json"
+                        }
+                    }
+                }
+            ]
+        }
+    ],
+    "serviceResourceGroups": [
+        {
+            "azureResourceGroupName": "rg-tt-<your-alias>-dev-<region-short-name>",
+            "location": "<region-name>",
+            "instanceOf": "todo",
+            "azureSubscriptionId": "<your-subscription-id>",
+            "scopeTags": [
+                {
+                    "name": "EnvironmentScope"
+                },
+                {
+                    "name": "PrefixScope"
+                },
+                {
+                    "name": "TeamScope"
+                },
+                {
+                    "name": "RegionScope"
+                }
+            ],
+            "serviceResources": [
+                {
+                    "name": "todo.infra.dev",
+                    "instanceOf": "infra"
+                }
+            ]
+        }
+    ]
+}

@@ -1,0 +1,107 @@
+{
+  "$schema": "https://ev2schema.azure.net/schemas/2020-01-01/scopeBindings.json",
+  "scopeBindings": [
+    {
+      "scopeTagName": "TeamScope",
+      "bindings": [
+        {
+          "find": "__TEAM_GROUP_NAME__",
+          "replaceWith": "$config(team.groupName)"
+        }
+      ]
+    },
+    {
+      "scopeTagName": "PrefixScope",
+      "bindings": [
+        {
+          "find": "[\"__PREFIXES__\"]",
+          "replaceWith": "$config(prefixes)"
+        },
+        {
+          "find": "__PREFIX_AZURE_DATA_EXPLORER__",
+          "replaceWith": "$config(prefixes.azureDataExplorer)"
+        },
+        {
+          "find": "__PREFIX_CLOUD_TEST__",
+          "replaceWith": "$config(prefixes.cloudTest)"
+        },
+        {
+          "find": "__PREFIX_EVENT_HUB__",
+          "replaceWith": "$config(prefixes.eventHub)"
+        },
+        {
+          "find": "__PREFIX_EVENT_HUB_CONSUMER_GROUP__",
+          "replaceWith": "$config(prefixes.eventHubConsumerGroup)"
+        },
+        {
+          "find": "__PREFIX_EVENT_HUB_NAMESPACE__",
+          "replaceWith": "$config(prefixes.eventHubNamespaces)"
+        },
+        {
+          "find": "__PREFIX_MANAGED_IDENTITY__",
+          "replaceWith": "$config(prefixes.managedIdentity)"
+        },
+        {
+          "find": "__PREFIX_RESOURCE_GROUP__",
+          "replaceWith": "$config(prefixes.resourcesResourceGroups)"
+        },
+        {
+          "find": "__PREFIX_STORAGE_ACCOUNT__",
+          "replaceWith": "$config(prefixes.storage)"
+        }
+
+      ]
+    },
+    {
+      "scopeTagName": "EnvironmentScope",
+      "bindings": [
+        {
+          "find": "__ENVIRONMENT_SHORT_NAME__",
+          "replaceWith": "$config(environment.name)"
+        },
+        {
+          "find": "__TEAM_PRINCIPAL_ID__",
+          "replaceWith": "$config(environment.principalId)"
+        },
+        {
+          "find": "__ENVIRONMENT_AZD_AZURE_ENV_NAME__",
+          "replaceWith": "$config(services.todo.name)-$config(environment.name)-$config(regionShortName)"
+        }
+      ]
+    },
+    {
+      "scopeTagName": "RegionScope",
+      "bindings": [
+        {
+          "find": "__REGION_LOCATION__",
+          "replaceWith": "$config(regionLongName)"
+        },
+        {
+          "find": "__REGION_SHORT_NAME__",
+          "replaceWith": "$config(regionShortName)"
+        },
+        {
+          "find": "__REGION_RESOURCE_GROUP_NAME__",
+          "replaceWith": "$config(prefixes.resourcesResourceGroups)$config(services.todo.name)-$config(environment.name)-$config(regionShortName)"
+        }
+      ]
+    },
+    {
+      "scopeTagName": "RolesScope",
+      "bindings": [
+        {
+          "find": "__ROLE_AZURE_STORAGE_BLOB_DATA_CONTRIBUTOR_CONTRIBUTOR__",
+          "replaceWith": "$config(azureBuiltInRoles.storageBlobDataContributor)"
+        },
+        {
+          "find": "__ROLE_AZURE_EVENT_HUBS_DATA_RECEIVER__",
+          "replaceWith": "$config(azureBuiltInRoles.eventHubsDataReceiver)"
+        },
+        {
+          "find": "__ROLE_AZURE_EVENT_HUBS_DATA_SENDER__",
+          "replaceWith": "$config(azureBuiltInRoles.eventHubsDataSender)"
+        }
+      ]
+    }
+  ]
+}

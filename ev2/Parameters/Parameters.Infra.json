@@ -1,0 +1,21 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "environmentName": {
+      "value": "__ENVIRONMENT_AZD_AZURE_ENV_NAME__"
+    },
+    "location": {
+      "value": "__REGION_LOCATION__"
+    },
+    "principalId": {
+      "value": "__TEAM_PRINCIPAL_ID__"
+    },
+    "useAPIM": {
+      "value": true
+    },
+    "enableDataStreaming": {
+      "value": true
+    }
+  }
+}
