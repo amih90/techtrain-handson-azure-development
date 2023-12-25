@@ -47,6 +47,32 @@
                     "instanceOf": "infra"
                 }
             ]
+        },
+        {
+            "azureResourceGroupName": "rg-tt-<your-alias>-prod-<region-short-name>",
+            "location": "<region-name>",
+            "instanceOf": "todo",
+            "azureSubscriptionId": "<your-subscription-id>",
+            "scopeTags": [
+                {
+                    "name": "EnvironmentScope"
+                },
+                {
+                    "name": "PrefixScope"
+                },
+                {
+                    "name": "TeamScope"
+                },
+                {
+                    "name": "RegionScope"
+                }
+            ],
+            "serviceResources": [
+                {
+                    "name": "todo.infra.prod",
+                    "instanceOf": "infra"
+                }
+            ]
         }
     ]
 }

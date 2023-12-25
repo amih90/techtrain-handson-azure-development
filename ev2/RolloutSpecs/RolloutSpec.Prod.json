@@ -1,0 +1,33 @@
+{
+    "$schema": "https://ev2schema.azure.net/schemas/2020-01-01/RolloutSpecification.json",
+    "contentVersion": "1.0.0.0",
+    "rolloutMetadata": {
+        "serviceModelPath": "ServiceModels/ServiceModel.json",
+        "scopeBindingsPath": "ScopeBindings/ScopeBindings.json",
+        "name": "TechTrain.Todo.Prod",
+        "rolloutType": "Major",
+        "buildSource": {
+            "parameters": {
+                "versionFile": "buildver.txt"
+            }
+        },
+        "configuration": {
+            "serviceScope": {
+                "specPath": "Configurations/ConfigurationSpec.Common.json"
+            },
+            "serviceGroupScope": {
+                "specPath": "Configurations/ConfigurationSpec.Prod.json"
+            }
+        }
+    },
+    "orchestratedSteps": [
+        {
+            "name": "todo.all",
+            "targetType": "ServiceResource",
+            "targetName": "todo.all.prod",
+            "actions": [
+                "Deploy"
+            ]
+        }
+    ]
+}
