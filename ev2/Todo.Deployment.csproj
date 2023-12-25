@@ -1,0 +1,41 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net6.0</TargetFramework>
+        <BicepVersion>0.20.4</BicepVersion>
+        <OutputPath>../bin/ServiceGroupRoot</OutputPath>
+        <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Azure.Bicep.CommandLine.linux-x64" Version="$(BicepVersion)" Condition="$([MSBuild]::IsOSPlatform('Linux'))" />
+        <PackageReference Include="Azure.Bicep.CommandLine.win-x64" Version="$(BicepVersion)" Condition="$([MSBuild]::IsOSPlatform('Windows'))" />
+        <PackageReference Include="Azure.Bicep.CommandLine.osx-x64" Version="$(BicepVersion)" Condition="$([MSBuild]::IsOSPlatform('OSX'))" />
+        <PackageReference Include="Azure.Bicep.MSBuild" Version="$(BicepVersion)" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ServiceGroupRoot Include="**\*.json" />
+        <VersionFiles Include="buildver.txt" />
+        <Bicep Include="..\infra\**\*.bicep" Exclude="..\infra\core\**">
+            <OutputFile>$(OutputPath)\%(RecursiveDir)\%(FileName).json</OutputFile>
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </Bicep>
+    </ItemGroup>
+
+    <Target Name="PackageDependencies" AfterTargets="Build">
+        <Message Text="Executing Package Dependencies Task" Importance="High" />
+    </Target>
+
+    <Target Name="CopyFiles" AfterTargets="PackageDependencies">
+        <Message Text="Executing CopyFiles Task" Importance="High" />
+        <Copy SourceFiles="@(ServiceGroupRoot)" DestinationFolder="$(OutputPath)/%(RecursiveDir)" />
+        <Copy SourceFiles="@(VersionFiles)" DestinationFolder="@(VersionFiles->'$(OutputPath)/%(RecursiveDir)')" />
+    </Target>
+
+    <Target Name="CleanOutputPath" AfterTargets="Clean">
+        <Message Text="Executing Clean '$(OutputPath)' Task" Importance="high" />
+        <RemoveDir Directories="$(OutputPath)" />
+    </Target>
+
+</Project>
