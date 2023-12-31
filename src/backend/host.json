@@ -5,6 +5,11 @@
             // "default": "Information"
             "backend.Healthz": "Information"
         },
+        "extensions": {
+            "durableTask": {
+                "hubName": "ToDoApp"
+            }
+        },
         "applicationInsights": {
             "samplingSettings": {
                 "isEnabled": true,

@@ -3,6 +3,8 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Azure.Identity;
 using Azure.Security.KeyVault.Secrets;
+using Microsoft.Azure.Cosmos;
+using Microsoft.Azure.Cosmos.Fluent;
 using Microsoft.Azure.Functions.Extensions.DependencyInjection;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.DependencyInjection;
@@ -34,7 +36,14 @@ namespace backend
 
                     return new VirusTotalClient(virusTotalApiKey, httpClient, memoryCache);
                 })
-                .AddSingleton<Healthz>();
+                .AddSingleton<Healthz>()
+                .AddSingleton<CosmosClient>(serviceProvider =>
+                {
+                    var accountEndpoint = Environment.GetEnvironmentVariable("CosmosConnectionOptions__accountEndpoint");
+                    var defaultAzureCredentials = serviceProvider.GetService<DefaultAzureCredential>();
+
+                    return new CosmosClientBuilder(accountEndpoint, defaultAzureCredentials).Build();
+                })
                 .AddHealthChecks();
         }
     }
