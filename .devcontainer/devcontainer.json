@@ -30,7 +30,7 @@
                 "ms-dotnettools.csdevkit@prerelease",
                 "bencoleman.armview",
                 "durablefunctionsmonitor.durablefunctionsmonitor",
-                "mhutchie.git-graph"
+                "mhutchie.git-graph"                
             ]
         }
     },
