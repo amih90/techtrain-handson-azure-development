@@ -8,6 +8,7 @@
     "EventHubRequestsName": "<eventhub-name>",
     "EventHubRequestsConnectionOptions__fullyQualifiedNamespace": "<eventhub-namespace-endpoint>",
     "EventHubRequestsConsumerGroup": "<consumer-group>",
-    "KeyVaultEndpoint": "<keyvault-endpoint>"
+    "KeyVaultEndpoint": "<keyvault-endpoint>",
+    "AzureOpenAIEndpoint": "<openai-endpoint>"
   }
 }
