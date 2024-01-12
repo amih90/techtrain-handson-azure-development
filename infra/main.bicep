@@ -120,18 +120,8 @@ module backend './app/backend.bicep' = {
       EventHubRequestsConnectionOptions__fullyQualifiedNamespace: '${eventHubRequests.outputs.eventHubNamespaceName}.servicebus.windows.net' // Note: this dns suffix isn't supported sovereign clouds
       EventHubRequestsConsumerGroup: eventHubRequestsConsumerGroup
       KeyVaultEndpoint: keyVault.outputs.endpoint
+      AzureOpenAIEndpoint: openAi.outputs.endpoint
     }
-  }
-}
-
-// Give the backend application access to consume events from the Event Hub
-module backendEventHubRoleAssignment './core/security/role.bicep' = {
-  name: 'msi-backend-eventhub-data-receiver'
-  scope: rg
-  params: {
-    principalType: 'ServicePrincipal'
-    roleDefinitionId: 'a638d3c7-ab3a-418d-83e6-5f17a39d4fde' // Azure Event Hubs Data Receiver
-    principalId: backend.outputs.SERVICE_BACKEND_IDENTITY_PRINCIPAL_ID
   }
 }
 
@@ -357,10 +347,53 @@ module apimApi './app/apim-api.bicep' = if (useAPIM) {
   }
 }
 
+
+// Configure Open AI
+module openAi './core/ai/cognitiveservices.bicep' = {
+  name: 'cs-oai-deployment'
+  scope: rg
+  params: {
+    name: '${abbrs.cognitiveServicesAccounts}${resourceToken}'
+    location: location
+    deployments: [
+      {
+        name: 'gpt-35-turbo-16k'
+        model: {
+          format: 'OpenAI'
+          name: 'gpt-35-turbo-16k'
+          version: '0613'
+        }
+        sku: {
+          name: 'Standard'
+          capacity: 120
+        }
+      }
+    ]
+    identity: {
+      type: 'UserAssigned'
+      userAssignedIdentities: {
+        '${userManagedIdentity.outputs.resourceId}': {}
+      }
+    }
+    keyVaultName: keyVault.outputs.name
+  }
+}
+
+module openAiRoleUser 'core/security/role.bicep' = {
+  name: 'oai-backend-openai-user-access'
+  scope: rg
+  params: {
+    principalType: 'ServicePrincipal'
+    principalId: backend.outputs.SERVICE_BACKEND_IDENTITY_PRINCIPAL_ID
+    roleDefinitionId: '5e0bd9bd-7b93-4f28-af87-19fc36ad61bd' // Cognitive Services OpenAI User
+  }
+}
+
 // Data outputs
 output AZURE_COSMOS_ENDPOINT string = cosmos.outputs.endpoint
 output AZURE_COSMOS_CONNECTION_STRING_KEY string = cosmos.outputs.connectionStringKey
 output AZURE_COSMOS_DATABASE_NAME string = cosmos.outputs.databaseName
+output AZURE_OPENAI_ENDPOINT string = openAi.outputs.endpoint
 
 // App outputs
 output APPLICATIONINSIGHTS_CONNECTION_STRING string = monitoring.outputs.applicationInsightsConnectionString
